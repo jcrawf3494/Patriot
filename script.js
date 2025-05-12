@@ -231,9 +231,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // refNum12. Download Handler
     function downloadImage() {
+        const stockNumber = document.getElementById('stockNumber').value.trim();
+        
+        if (!stockNumber) {
+            alert('Please enter a stock number before downloading.');
+            return;
+        }
+        
         const link = document.createElement('a');
-        link.download = 'overlayed-image.png';
-        link.href = canvas.toDataURL('image/png');                // Reference refNum7
+        link.download = `${stockNumber}.png`;
+        link.href = canvas.toDataURL('image/png');
         link.click();
     }
     
