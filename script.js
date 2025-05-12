@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('mouseup', handleMouseUp);
     canvas.addEventListener('mouseleave', handleMouseUp);
     
+    // refNum6. Mouse Event Handlers
     function handleMouseDown(e) {
         if (!topText.value) return;
         
@@ -100,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    // refNum7. Mouse Movement Handler
     function handleMouseMove(e) {
         if (!isDragging || !isDraggingTopText) return;
         
@@ -117,12 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
         redrawCanvas();
     }
     
+    // refNum8. Mouse Up Handler
     function handleMouseUp() {
         isDragging = false;
         isDraggingTopText = false;
     }
     
-    // Function to draw text with glow effect
+    // refNum9. Text Drawing Function
     function drawTextWithGlow(text, x, y, isTopText = false) {
         // Convert text to uppercase
         text = text.toUpperCase();
@@ -183,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.shadowBlur = 0;
     }
     
-    // Function to draw gradient rectangle
+    // refNum10. Gradient Rectangle Drawing Function
     function drawGradientRectangle() {
         const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
         gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');    // White at start
@@ -194,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillRect(0, 0, canvas.width, 120);  // Back to 120px height
     }
     
-    // Function to redraw canvas with current state
+    // refNum11. Canvas Redraw Function
     function redrawCanvas() {
         if (!canvas.width || !canvas.height) return;
         
@@ -225,6 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     let baseImage = null;
+    
+    // refNum12. Download Handler
+    function downloadImage() {
+        const link = document.createElement('a');
+        link.download = 'overlayed-image.png';
+        link.href = canvas.toDataURL('image/png');                // Reference refNum7
+        link.click();
+    }
     
     // refNum4. Image Upload Handler
     function handleImageUpload(e) {
@@ -257,13 +268,5 @@ document.addEventListener('DOMContentLoaded', () => {
             img.src = event.target.result;
         };
         reader.readAsDataURL(file);
-    }
-    
-    // refNum9. Download Handler
-    function downloadImage() {
-        const link = document.createElement('a');
-        link.download = 'overlayed-image.png';
-        link.href = canvas.toDataURL('image/png');                // Reference refNum7
-        link.click();
     }
 }); 
