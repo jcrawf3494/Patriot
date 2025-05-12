@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Overlay Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- refNum1. Main Container -->
+    <div class="container">
+        <!-- refNum2. Title -->
+        <h1>Image Overlay Tool</h1>
+        
+        <!-- refNum3. Upload Section -->
+        <div class="upload-section">
+            <!-- refNum4. File Input -->
+            <input type="file" id="imageUpload" accept="image/jpeg,image/png" class="file-input">
+            <!-- refNum5. Upload Button Label -->
+            <label for="imageUpload" class="upload-button">Choose Image (JPEG or PNG)</label>
+        </div>
+        
+        <!-- Text Input Section -->
+        <div class="text-input-section">
+            <div class="text-control">
+                <input type="text" id="topText" placeholder="Enter top text here" class="text-input">
+                <button id="decreaseTopFont" class="font-button">Decrease Top Font</button>
+                <button id="increaseTopFont" class="font-button">Increase Top Font</button>
+            </div>
+            <div class="text-control">
+                <input type="text" id="bottomText" placeholder="Enter bottom text here" class="text-input">
+                <button id="decreaseBottomFont" class="font-button">Decrease Bottom Font</button>
+                <button id="increaseBottomFont" class="font-button">Increase Bottom Font</button>
+            </div>
+        </div>
+        
+        <!-- refNum6. Canvas Container -->
+        <div class="canvas-container">
+            <!-- refNum7. Canvas Element -->
+            <canvas id="imageCanvas"></canvas>
+        </div>
+        
+        <!-- refNum8. Download Button -->
+        <button id="downloadBtn" class="download-button" disabled>Download Image</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 

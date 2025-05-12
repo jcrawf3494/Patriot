@@ -1,0 +1,141 @@
+/* refNum1. Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* refNum2. Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* refNum3. Main Container (Reference refNum1) */
+.container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 90%;
+}
+
+/* refNum4. Title (Reference refNum2) */
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+/* refNum5. Upload Section (Reference refNum3) */
+.upload-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* refNum6. File Input (Reference refNum4) */
+.file-input {
+    display: none;
+}
+
+/* refNum7. Upload Button (Reference refNum5) */
+.upload-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.upload-button:hover {
+    background-color: #45a049;
+}
+
+/* Text Input Section */
+.text-input-section {
+    text-align: center;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.text-control {
+    width: 80%;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.text-input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Impact', sans-serif;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #2196F3;
+}
+
+.font-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+}
+
+.font-button:hover {
+    background-color: #45a049;
+}
+
+/* refNum8. Canvas Container (Reference refNum6) */
+.canvas-container {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+/* refNum9. Canvas Element (Reference refNum7) */
+canvas {
+    max-width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* refNum10. Download Button (Reference refNum8) */
+.download-button {
+    background-color: #2196F3;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    transition: background-color 0.3s;
+}
+
+.download-button:hover {
+    background-color: #1976D2;
+}
+
+.download-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+} 
