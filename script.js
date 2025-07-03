@@ -10,10 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const decreaseTopFont = document.getElementById('decreaseTopFont');
     const increaseBottomFont = document.getElementById('increaseBottomFont');
     const decreaseBottomFont = document.getElementById('decreaseBottomFont');
+    const comingSoonBtn = document.getElementById('comingSoonBtn');
+    const increaseComingSoonFont = document.getElementById('increaseComingSoonFont');
+    const decreaseComingSoonFont = document.getElementById('decreaseComingSoonFont');
     
     // Font size state
     let topFontSize = 48;
     let bottomFontSize = 48;
+    let comingSoonFontSize = 60;
     const MIN_FONT_SIZE = 12;
     const MAX_FONT_SIZE = 120;
     const FONT_SIZE_STEP = 4;
@@ -25,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let textX = 0;
     let textY = 0;
     let isDraggingTopText = false;
+    
+    // Coming Soon text state
+    let showComingSoon = false;
     
     // refNum2. Overlay Image
     let overlayImage = new Image();
@@ -70,6 +77,24 @@ document.addEventListener('DOMContentLoaded', () => {
     decreaseBottomFont.addEventListener('click', () => {
         if (bottomFontSize > MIN_FONT_SIZE) {
             bottomFontSize -= FONT_SIZE_STEP;
+            redrawCanvas();
+        }
+    });
+    
+    // Coming Soon button event listener
+    comingSoonBtn.addEventListener('click', addComingSoonText);
+    
+    // Coming Soon font size control event listeners
+    increaseComingSoonFont.addEventListener('click', () => {
+        if (comingSoonFontSize < MAX_FONT_SIZE) {
+            comingSoonFontSize += FONT_SIZE_STEP;
+            redrawCanvas();
+        }
+    });
+    
+    decreaseComingSoonFont.addEventListener('click', () => {
+        if (comingSoonFontSize > MIN_FONT_SIZE) {
+            comingSoonFontSize -= FONT_SIZE_STEP;
             redrawCanvas();
         }
     });
@@ -197,6 +222,36 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillRect(0, 0, canvas.width, 120);  // Back to 120px height
     }
     
+    // Function to toggle "COMING SOON" text
+    function addComingSoonText() {
+        showComingSoon = !showComingSoon;
+        redrawCanvas();
+    }
+    
+    // Function to draw "COMING SOON" text
+    function drawComingSoonText() {
+        if (!canvas.width || !canvas.height) return;
+        
+        // Save current context state
+        ctx.save();
+        
+        // Set font and size
+        ctx.font = `${comingSoonFontSize}px Impact`;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; // 60% opacity white
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Calculate center position of the canvas
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        // Draw the text centered horizontally and vertically
+        ctx.fillText('COMING SOON', centerX, centerY);
+        
+        // Restore context state
+        ctx.restore();
+    }
+    
     // refNum11. Canvas Redraw Function
     function redrawCanvas() {
         if (!canvas.width || !canvas.height) return;
@@ -224,6 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bottomText.value) {
             const bottomPadding = 20;
             drawTextWithGlow(bottomText.value, canvas.width / 2, canvas.height - bottomPadding, false);
+        }
+        
+        // Draw "COMING SOON" text if enabled
+        if (showComingSoon) {
+            drawComingSoonText();
         }
     }
     
@@ -265,6 +325,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 textY = 65;
                 topFontSize = 48;
                 bottomFontSize = 48;
+                comingSoonFontSize = 60;
+                showComingSoon = false;
                 
                 // Redraw canvas with new image
                 redrawCanvas();

@@ -198,4 +198,42 @@ h1 {
 .stock-input::placeholder {
     color: #888;
     text-transform: none;
+}
+
+/* Coming Soon Button */
+.coming-soon-button {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 24px;
+    background: linear-gradient(145deg, #FF6B35, #F7931E);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+}
+
+.coming-soon-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+}
+
+/* Coming Soon Section */
+.coming-soon-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.coming-soon-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
 } 
