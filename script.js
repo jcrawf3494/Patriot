@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const comingSoonBtn = document.getElementById('comingSoonBtn');
     const increaseComingSoonFont = document.getElementById('increaseComingSoonFont');
     const decreaseComingSoonFont = document.getElementById('decreaseComingSoonFont');
+    const addSnowModeBtn = document.getElementById('addSnowModeBtn');
+    const increaseSnowModeSize = document.getElementById('increaseSnowModeSize');
+    const decreaseSnowModeSize = document.getElementById('decreaseSnowModeSize');
+    const removeSnowModeBtn = document.getElementById('removeSnowModeBtn');
     
     // Font size state
     let topFontSize = 48;
@@ -32,6 +36,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Coming Soon text state
     let showComingSoon = false;
+    const MIN_SCALE = 0.1;
+    const MAX_SCALE = 2.0;
+    const SCALE_STEP = 0.05;
+    
+    // Snow Mode SVG state
+    let snowModeImage = null;
+    let showSnowMode = false;
+    let snowModeX = 0;
+    let snowModeY = 0;
+    let snowModeWidth = 0;
+    let snowModeHeight = 0;
+    let snowModeScale = 0.3; // Start at 30% of original size
+    let isDraggingSnowMode = false;
     
     // refNum2. Overlay Image
     let overlayImage = new Image();
@@ -84,6 +101,47 @@ document.addEventListener('DOMContentLoaded', () => {
     // Coming Soon button event listener
     comingSoonBtn.addEventListener('click', addComingSoonText);
     
+    // Snow Mode button event listener
+    addSnowModeBtn.addEventListener('click', addSnowModeOverlay);
+    
+    // Snow Mode remove button event listener
+    removeSnowModeBtn.addEventListener('click', removeSnowModeOverlay);
+    
+    // Snow Mode size control event listeners
+    increaseSnowModeSize.addEventListener('click', () => {
+        if (snowModeScale < MAX_SCALE && showSnowMode && snowModeImage) {
+            // Store current center position
+            const centerX = snowModeX + snowModeWidth / 2;
+            const centerY = snowModeY + snowModeHeight / 2;
+            
+            snowModeScale = Math.min(MAX_SCALE, snowModeScale + SCALE_STEP);
+            updateSnowModeDimensions();
+            
+            // Restore center position
+            snowModeX = centerX - snowModeWidth / 2;
+            snowModeY = centerY - snowModeHeight / 2;
+            
+            redrawCanvas();
+        }
+    });
+    
+    decreaseSnowModeSize.addEventListener('click', () => {
+        if (snowModeScale > MIN_SCALE && showSnowMode && snowModeImage) {
+            // Store current center position
+            const centerX = snowModeX + snowModeWidth / 2;
+            const centerY = snowModeY + snowModeHeight / 2;
+            
+            snowModeScale = Math.max(MIN_SCALE, snowModeScale - SCALE_STEP);
+            updateSnowModeDimensions();
+            
+            // Restore center position
+            snowModeX = centerX - snowModeWidth / 2;
+            snowModeY = centerY - snowModeHeight / 2;
+            
+            redrawCanvas();
+        }
+    });
+    
     // Coming Soon font size control event listeners
     increaseComingSoonFont.addEventListener('click', () => {
         if (comingSoonFontSize < MAX_FONT_SIZE) {
@@ -107,47 +165,77 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // refNum6. Mouse Event Handlers
     function handleMouseDown(e) {
-        if (!topText.value) return;
-        
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
         
-        // Check if click is within text bounds
-        const textWidth = ctx.measureText(topText.value.toUpperCase()).width;
-        const textHeight = topFontSize; // Use current font size
+        // Check if click is within Snow Mode bounds (highest priority - top layer)
+        if (showSnowMode && snowModeImage) {
+            if (mouseX >= snowModeX && mouseX <= snowModeX + snowModeWidth &&
+                mouseY >= snowModeY && mouseY <= snowModeY + snowModeHeight) {
+                isDragging = true;
+                isDraggingSnowMode = true;
+                dragStartX = mouseX - snowModeX;
+                dragStartY = mouseY - snowModeY;
+                return;
+            }
+        }
         
-        if (mouseX >= textX && mouseX <= textX + textWidth &&
-            mouseY >= textY - textHeight && mouseY <= textY) {
-            isDragging = true;
-            isDraggingTopText = true;
-            dragStartX = mouseX - textX;
-            dragStartY = mouseY - textY;
+        // Check if click is within text bounds
+        if (topText.value) {
+            const textWidth = ctx.measureText(topText.value.toUpperCase()).width;
+            const textHeight = topFontSize; // Use current font size
+            
+            if (mouseX >= textX && mouseX <= textX + textWidth &&
+                mouseY >= textY - textHeight && mouseY <= textY) {
+                isDragging = true;
+                isDraggingTopText = true;
+                dragStartX = mouseX - textX;
+                dragStartY = mouseY - textY;
+            }
         }
     }
     
     // refNum7. Mouse Movement Handler
     function handleMouseMove(e) {
-        if (!isDragging || !isDraggingTopText) return;
+        if (!isDragging) return;
         
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
         
-        textX = mouseX - dragStartX;
-        textY = mouseY - dragStartY;
-        
-        // Keep text within canvas bounds
-        textX = Math.max(0, Math.min(textX, canvas.width - ctx.measureText(topText.value.toUpperCase()).width));
-        textY = Math.max(topFontSize, Math.min(textY, canvas.height - 20));
-        
-        redrawCanvas();
+        if (isDraggingSnowMode) {
+            // Calculate position based on mouse position relative to canvas
+            // Allow movement outside canvas bounds for free positioning
+            snowModeX = mouseX - dragStartX;
+            snowModeY = mouseY - dragStartY;
+            
+            redrawCanvas();
+        } else if (isDraggingTopText) {
+            textX = mouseX - dragStartX;
+            textY = mouseY - dragStartY;
+            
+            // Keep text within canvas bounds
+            textX = Math.max(0, Math.min(textX, canvas.width - ctx.measureText(topText.value.toUpperCase()).width));
+            textY = Math.max(topFontSize, Math.min(textY, canvas.height - 20));
+            
+            redrawCanvas();
+        }
     }
     
     // refNum8. Mouse Up Handler
     function handleMouseUp() {
         isDragging = false;
         isDraggingTopText = false;
+        isDraggingSnowMode = false;
+    }
+    
+    // Function to update Snow Mode dimensions based on scale
+    function updateSnowModeDimensions() {
+        if (snowModeImage) {
+            snowModeWidth = snowModeImage.width * snowModeScale;
+            snowModeHeight = snowModeImage.height * snowModeScale;
+        }
     }
     
     // refNum9. Text Drawing Function
@@ -228,6 +316,52 @@ document.addEventListener('DOMContentLoaded', () => {
         redrawCanvas();
     }
     
+    // Function to add Snow Mode overlay
+    function addSnowModeOverlay() {
+        if (!showSnowMode) {
+            // Load the image if not already loaded
+            if (!snowModeImage) {
+                const img = new Image();
+                img.onload = function() {
+                    snowModeImage = img;
+                    // Set initial dimensions based on scale
+                    updateSnowModeDimensions();
+                    // Set initial position (center of canvas)
+                    if (canvas.width && canvas.height) {
+                        snowModeX = (canvas.width - snowModeWidth) / 2;
+                        snowModeY = (canvas.height - snowModeHeight) / 2;
+                    }
+                    showSnowMode = true;
+                    redrawCanvas();
+                };
+                img.onerror = function() {
+                    console.error('Error loading Snow Mode image');
+                    alert('Error loading Snow Mode image. Please make sure the file exists.');
+                };
+                img.src = 'New Project.png';
+            } else {
+                // Image already loaded, just show it
+                updateSnowModeDimensions();
+                if (canvas.width && canvas.height && snowModeX === 0 && snowModeY === 0) {
+                    snowModeX = (canvas.width - snowModeWidth) / 2;
+                    snowModeY = (canvas.height - snowModeHeight) / 2;
+                }
+                showSnowMode = true;
+                redrawCanvas();
+            }
+        } else {
+            // Toggle off
+            showSnowMode = false;
+            redrawCanvas();
+        }
+    }
+    
+    // Function to remove Snow Mode overlay
+    function removeSnowModeOverlay() {
+        showSnowMode = false;
+        redrawCanvas();
+    }
+    
     // Function to draw "COMING SOON" text
     function drawComingSoonText() {
         if (!canvas.width || !canvas.height) return;
@@ -285,6 +419,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (showComingSoon) {
             drawComingSoonText();
         }
+        
+        // Draw Snow Mode overlay if enabled (draw last so it's on top)
+        if (showSnowMode && snowModeImage) {
+            // Save context to preserve transparency
+            ctx.save();
+            // Draw the SVG image with scaling - transparency is preserved automatically for SVG
+            ctx.drawImage(
+                snowModeImage, 
+                snowModeX, 
+                snowModeY,
+                snowModeWidth,
+                snowModeHeight
+            );
+            ctx.restore();
+        }
     }
     
     let baseImage = null;
@@ -327,6 +476,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 bottomFontSize = 48;
                 comingSoonFontSize = 60;
                 showComingSoon = false;
+                
+                // Reset Snow Mode position if it's shown
+                if (showSnowMode && snowModeImage) {
+                    updateSnowModeDimensions();
+                    snowModeX = (canvas.width - snowModeWidth) / 2;
+                    snowModeY = (canvas.height - snowModeHeight) / 2;
+                }
                 
                 // Redraw canvas with new image
                 redrawCanvas();

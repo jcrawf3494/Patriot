@@ -236,4 +236,62 @@ h1 {
     display: flex;
     gap: 15px;
     align-items: center;
+}
+
+/* Snow Mode Section */
+.snow-mode-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.snow-mode-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.snow-mode-button {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 24px;
+    background: linear-gradient(145deg, #00BCD4, #0097A7);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 188, 212, 0.2);
+}
+
+.snow-mode-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3);
+}
+
+.remove-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(145deg, #f44336, #d32f2f);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 150px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.2);
+}
+
+.remove-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
 } 
