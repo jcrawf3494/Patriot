@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const increaseSnowModeSize = document.getElementById('increaseSnowModeSize');
     const decreaseSnowModeSize = document.getElementById('decreaseSnowModeSize');
     const removeSnowModeBtn = document.getElementById('removeSnowModeBtn');
+    const addGreatReliabilityBtn = document.getElementById('addGreatReliabilityBtn');
+    const increaseGreatReliabilitySize = document.getElementById('increaseGreatReliabilitySize');
+    const decreaseGreatReliabilitySize = document.getElementById('decreaseGreatReliabilitySize');
+    const removeGreatReliabilityBtn = document.getElementById('removeGreatReliabilityBtn');
     
     // Font size state
     let topFontSize = 48;
@@ -49,6 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let snowModeHeight = 0;
     let snowModeScale = 0.3; // Start at 30% of original size
     let isDraggingSnowMode = false;
+    
+    // Great Reliability image state
+    let greatReliabilityImage = null;
+    let showGreatReliability = false;
+    let greatReliabilityX = 0;
+    let greatReliabilityY = 0;
+    let greatReliabilityWidth = 0;
+    let greatReliabilityHeight = 0;
+    let greatReliabilityScale = 0.3; // Start at 30% of original size
+    let isDraggingGreatReliability = false;
     
     // refNum2. Overlay Image
     let overlayImage = new Image();
@@ -107,6 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Snow Mode remove button event listener
     removeSnowModeBtn.addEventListener('click', removeSnowModeOverlay);
     
+    // Great Reliability button event listener
+    addGreatReliabilityBtn.addEventListener('click', addGreatReliabilityBadge);
+    
+    // Great Reliability remove button event listener
+    removeGreatReliabilityBtn.addEventListener('click', removeGreatReliabilityBadge);
+    
     // Snow Mode size control event listeners
     increaseSnowModeSize.addEventListener('click', () => {
         if (snowModeScale < MAX_SCALE && showSnowMode && snowModeImage) {
@@ -137,6 +157,41 @@ document.addEventListener('DOMContentLoaded', () => {
             // Restore center position
             snowModeX = centerX - snowModeWidth / 2;
             snowModeY = centerY - snowModeHeight / 2;
+            
+            redrawCanvas();
+        }
+    });
+    
+    // Great Reliability size control event listeners
+    increaseGreatReliabilitySize.addEventListener('click', () => {
+        if (greatReliabilityScale < MAX_SCALE && showGreatReliability && greatReliabilityImage) {
+            // Store current center position
+            const centerX = greatReliabilityX + greatReliabilityWidth / 2;
+            const centerY = greatReliabilityY + greatReliabilityHeight / 2;
+            
+            greatReliabilityScale = Math.min(MAX_SCALE, greatReliabilityScale + SCALE_STEP);
+            updateGreatReliabilityDimensions();
+            
+            // Restore center position
+            greatReliabilityX = centerX - greatReliabilityWidth / 2;
+            greatReliabilityY = centerY - greatReliabilityHeight / 2;
+            
+            redrawCanvas();
+        }
+    });
+    
+    decreaseGreatReliabilitySize.addEventListener('click', () => {
+        if (greatReliabilityScale > MIN_SCALE && showGreatReliability && greatReliabilityImage) {
+            // Store current center position
+            const centerX = greatReliabilityX + greatReliabilityWidth / 2;
+            const centerY = greatReliabilityY + greatReliabilityHeight / 2;
+            
+            greatReliabilityScale = Math.max(MIN_SCALE, greatReliabilityScale - SCALE_STEP);
+            updateGreatReliabilityDimensions();
+            
+            // Restore center position
+            greatReliabilityX = centerX - greatReliabilityWidth / 2;
+            greatReliabilityY = centerY - greatReliabilityHeight / 2;
             
             redrawCanvas();
         }
@@ -181,6 +236,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
+        // Check if click is within Great Reliability bounds
+        if (showGreatReliability && greatReliabilityImage) {
+            if (mouseX >= greatReliabilityX && mouseX <= greatReliabilityX + greatReliabilityWidth &&
+                mouseY >= greatReliabilityY && mouseY <= greatReliabilityY + greatReliabilityHeight) {
+                isDragging = true;
+                isDraggingGreatReliability = true;
+                dragStartX = mouseX - greatReliabilityX;
+                dragStartY = mouseY - greatReliabilityY;
+                return;
+            }
+        }
+        
         // Check if click is within text bounds
         if (topText.value) {
             const textWidth = ctx.measureText(topText.value.toUpperCase()).width;
@@ -211,6 +278,13 @@ document.addEventListener('DOMContentLoaded', () => {
             snowModeY = mouseY - dragStartY;
             
             redrawCanvas();
+        } else if (isDraggingGreatReliability) {
+            // Calculate position based on mouse position relative to canvas
+            // Allow movement outside canvas bounds for free positioning
+            greatReliabilityX = mouseX - dragStartX;
+            greatReliabilityY = mouseY - dragStartY;
+            
+            redrawCanvas();
         } else if (isDraggingTopText) {
             textX = mouseX - dragStartX;
             textY = mouseY - dragStartY;
@@ -228,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isDragging = false;
         isDraggingTopText = false;
         isDraggingSnowMode = false;
+        isDraggingGreatReliability = false;
     }
     
     // Function to update Snow Mode dimensions based on scale
@@ -235,6 +310,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (snowModeImage) {
             snowModeWidth = snowModeImage.width * snowModeScale;
             snowModeHeight = snowModeImage.height * snowModeScale;
+        }
+    }
+    
+    // Function to update Great Reliability dimensions based on scale
+    function updateGreatReliabilityDimensions() {
+        if (greatReliabilityImage) {
+            greatReliabilityWidth = greatReliabilityImage.width * greatReliabilityScale;
+            greatReliabilityHeight = greatReliabilityImage.height * greatReliabilityScale;
         }
     }
     
@@ -362,6 +445,52 @@ document.addEventListener('DOMContentLoaded', () => {
         redrawCanvas();
     }
     
+    // Function to add Great Reliability badge
+    function addGreatReliabilityBadge() {
+        if (!showGreatReliability) {
+            // Load the image if not already loaded
+            if (!greatReliabilityImage) {
+                const img = new Image();
+                img.onload = function() {
+                    greatReliabilityImage = img;
+                    // Set initial dimensions based on scale
+                    updateGreatReliabilityDimensions();
+                    // Set initial position (center of canvas)
+                    if (canvas.width && canvas.height) {
+                        greatReliabilityX = (canvas.width - greatReliabilityWidth) / 2;
+                        greatReliabilityY = (canvas.height - greatReliabilityHeight) / 2;
+                    }
+                    showGreatReliability = true;
+                    redrawCanvas();
+                };
+                img.onerror = function() {
+                    console.error('Error loading Great Reliability image');
+                    alert('Error loading Great Reliability image. Please make sure the file exists.');
+                };
+                img.src = 'grbNEW.png';
+            } else {
+                // Image already loaded, just show it
+                updateGreatReliabilityDimensions();
+                if (canvas.width && canvas.height && greatReliabilityX === 0 && greatReliabilityY === 0) {
+                    greatReliabilityX = (canvas.width - greatReliabilityWidth) / 2;
+                    greatReliabilityY = (canvas.height - greatReliabilityHeight) / 2;
+                }
+                showGreatReliability = true;
+                redrawCanvas();
+            }
+        } else {
+            // Toggle off
+            showGreatReliability = false;
+            redrawCanvas();
+        }
+    }
+    
+    // Function to remove Great Reliability badge
+    function removeGreatReliabilityBadge() {
+        showGreatReliability = false;
+        redrawCanvas();
+    }
+    
     // Function to draw "COMING SOON" text
     function drawComingSoonText() {
         if (!canvas.width || !canvas.height) return;
@@ -398,6 +527,21 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.drawImage(baseImage, 0, 0);
         }
         
+        // Draw Great Reliability badge if enabled (lowest layer - drawn first)
+        if (showGreatReliability && greatReliabilityImage) {
+            // Save context to preserve transparency
+            ctx.save();
+            // Draw the image with scaling - transparency is preserved automatically
+            ctx.drawImage(
+                greatReliabilityImage, 
+                greatReliabilityX, 
+                greatReliabilityY,
+                greatReliabilityWidth,
+                greatReliabilityHeight
+            );
+            ctx.restore();
+        }
+        
         // Draw gradient rectangle
         drawGradientRectangle();
         
@@ -409,6 +553,21 @@ document.addEventListener('DOMContentLoaded', () => {
             drawTextWithGlow(topText.value, textX, textY, true);
         }
         
+        // Draw Snow Mode overlay if enabled (above top text, below bottom text)
+        if (showSnowMode && snowModeImage) {
+            // Save context to preserve transparency
+            ctx.save();
+            // Draw the image with scaling - transparency is preserved automatically
+            ctx.drawImage(
+                snowModeImage, 
+                snowModeX, 
+                snowModeY,
+                snowModeWidth,
+                snowModeHeight
+            );
+            ctx.restore();
+        }
+        
         // Draw bottom text if it exists
         if (bottomText.value) {
             const bottomPadding = 20;
@@ -418,21 +577,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Draw "COMING SOON" text if enabled
         if (showComingSoon) {
             drawComingSoonText();
-        }
-        
-        // Draw Snow Mode overlay if enabled (draw last so it's on top)
-        if (showSnowMode && snowModeImage) {
-            // Save context to preserve transparency
-            ctx.save();
-            // Draw the SVG image with scaling - transparency is preserved automatically for SVG
-            ctx.drawImage(
-                snowModeImage, 
-                snowModeX, 
-                snowModeY,
-                snowModeWidth,
-                snowModeHeight
-            );
-            ctx.restore();
         }
     }
     
@@ -482,6 +626,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateSnowModeDimensions();
                     snowModeX = (canvas.width - snowModeWidth) / 2;
                     snowModeY = (canvas.height - snowModeHeight) / 2;
+                }
+                
+                // Reset Great Reliability position if it's shown
+                if (showGreatReliability && greatReliabilityImage) {
+                    updateGreatReliabilityDimensions();
+                    greatReliabilityX = (canvas.width - greatReliabilityWidth) / 2;
+                    greatReliabilityY = (canvas.height - greatReliabilityHeight) / 2;
                 }
                 
                 // Redraw canvas with new image

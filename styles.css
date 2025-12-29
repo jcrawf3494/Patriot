@@ -127,10 +127,19 @@ h1 {
     box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
 }
 
+/* Canvas and Controls Wrapper */
+.canvas-controls-wrapper {
+    display: flex;
+    gap: 30px;
+    margin: 30px 0;
+    align-items: flex-start;
+    justify-content: center;
+}
+
 /* refNum8. Canvas Container (Reference refNum6) */
 .canvas-container {
-    margin: 30px 0;
     text-align: center;
+    flex: 0 0 auto;
 }
 
 /* refNum9. Canvas Element (Reference refNum7) */
@@ -203,7 +212,6 @@ h1 {
 /* Coming Soon Button */
 .coming-soon-button {
     display: block;
-    margin: 20px auto;
     padding: 12px 24px;
     background: linear-gradient(145deg, #FF6B35, #F7931E);
     color: white;
@@ -213,7 +221,7 @@ h1 {
     font-size: 16px;
     font-weight: 600;
     transition: all 0.3s ease;
-    width: 300px;
+    width: 100%;
     text-align: center;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
 }
@@ -223,13 +231,19 @@ h1 {
     box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
 }
 
+/* Controls Sidebar */
+.controls-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 300px;
+}
+
 /* Coming Soon Section */
 .coming-soon-section {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 15px;
-    margin: 20px 0;
 }
 
 .coming-soon-controls {
@@ -242,20 +256,18 @@ h1 {
 .snow-mode-section {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 15px;
-    margin: 20px 0;
 }
 
 .snow-mode-controls {
     display: flex;
     gap: 15px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .snow-mode-button {
     display: block;
-    margin: 20px auto;
     padding: 12px 24px;
     background: linear-gradient(145deg, #00BCD4, #0097A7);
     color: white;
@@ -265,7 +277,7 @@ h1 {
     font-size: 16px;
     font-weight: 600;
     transition: all 0.3s ease;
-    width: 300px;
+    width: 100%;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 188, 212, 0.2);
 }
@@ -294,4 +306,39 @@ h1 {
 .remove-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
+}
+
+/* Great Reliability Section */
+.great-reliability-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.great-reliability-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.great-reliability-button {
+    display: block;
+    padding: 12px 24px;
+    background: linear-gradient(145deg, #9C27B0, #7B1FA2);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.2);
+}
+
+.great-reliability-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(156, 39, 176, 0.3);
 } 

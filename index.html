@@ -41,33 +41,49 @@
             </div>
         </div>
         
-        <!-- refNum6. Canvas Container -->
-        <div class="canvas-container">
-            <!-- refNum7. Canvas Element -->
-            <canvas id="imageCanvas"></canvas>
+        <!-- Canvas and Controls Wrapper -->
+        <div class="canvas-controls-wrapper">
+            <!-- refNum6. Canvas Container -->
+            <div class="canvas-container">
+                <!-- refNum7. Canvas Element -->
+                <canvas id="imageCanvas"></canvas>
+            </div>
+            
+            <!-- Controls Sidebar -->
+            <div class="controls-sidebar">
+                <!-- Coming Soon Section -->
+                <div class="coming-soon-section">
+                    <button id="comingSoonBtn" class="coming-soon-button">Add "COMING SOON" Text</button>
+                    <div class="coming-soon-controls">
+                        <button id="decreaseComingSoonFont" class="font-button">↓ A</button>
+                        <button id="increaseComingSoonFont" class="font-button">↑ A</button>
+                    </div>
+                </div>
+                
+                <!-- Snow Mode Section -->
+                <div class="snow-mode-section">
+                    <button id="addSnowModeBtn" class="snow-mode-button">Add Snow Mode Overlay</button>
+                    <div class="snow-mode-controls">
+                        <button id="decreaseSnowModeSize" class="font-button">↓ Size</button>
+                        <button id="increaseSnowModeSize" class="font-button">↑ Size</button>
+                        <button id="removeSnowModeBtn" class="remove-button">Remove</button>
+                    </div>
+                </div>
+                
+                <!-- Great Reliability Section -->
+                <div class="great-reliability-section">
+                    <button id="addGreatReliabilityBtn" class="great-reliability-button">Add Great Reliability Badge</button>
+                    <div class="great-reliability-controls">
+                        <button id="decreaseGreatReliabilitySize" class="font-button">↓ Size</button>
+                        <button id="increaseGreatReliabilitySize" class="font-button">↑ Size</button>
+                        <button id="removeGreatReliabilityBtn" class="remove-button">Remove</button>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- refNum8. Download Button -->
         <button id="downloadBtn" class="download-button" disabled>Download Image</button>
-        
-        <!-- Coming Soon Section -->
-        <div class="coming-soon-section">
-            <button id="comingSoonBtn" class="coming-soon-button">Add "COMING SOON" Text</button>
-            <div class="coming-soon-controls">
-                <button id="decreaseComingSoonFont" class="font-button">↓ A</button>
-                <button id="increaseComingSoonFont" class="font-button">↑ A</button>
-            </div>
-        </div>
-        
-        <!-- Snow Mode Section -->
-        <div class="snow-mode-section">
-            <button id="addSnowModeBtn" class="snow-mode-button">Add Snow Mode Overlay</button>
-            <div class="snow-mode-controls">
-                <button id="decreaseSnowModeSize" class="font-button">↓ Size</button>
-                <button id="increaseSnowModeSize" class="font-button">↑ Size</button>
-                <button id="removeSnowModeBtn" class="remove-button">Remove</button>
-            </div>
-        </div>
     </div>
     <script src="script.js"></script>
 </body>
