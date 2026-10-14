@@ -21,6 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const increaseGreatReliabilitySize = document.getElementById('increaseGreatReliabilitySize');
     const decreaseGreatReliabilitySize = document.getElementById('decreaseGreatReliabilitySize');
     const removeGreatReliabilityBtn = document.getElementById('removeGreatReliabilityBtn');
+    const addGreatGasMileageBtn = document.getElementById('addGreatGasMileageBtn');
+    const increaseGreatGasMileageSize = document.getElementById('increaseGreatGasMileageSize');
+    const decreaseGreatGasMileageSize = document.getElementById('decreaseGreatGasMileageSize');
+    const removeGreatGasMileageBtn = document.getElementById('removeGreatGasMileageBtn');
     
     // Font size state
     let topFontSize = 48;
@@ -42,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let showComingSoon = false;
     const MIN_SCALE = 0.1;
     const MAX_SCALE = 2.0;
+    const MAX_GREAT_GAS_MILEAGE_SCALE = 1.0;
     const SCALE_STEP = 0.05;
     
     // Snow Mode SVG state
@@ -63,6 +68,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let greatReliabilityHeight = 0;
     let greatReliabilityScale = 0.3; // Start at 30% of original size
     let isDraggingGreatReliability = false;
+
+    // Great Gas Mileage image state
+    let greatGasMileageImage = null;
+    let showGreatGasMileage = false;
+    let greatGasMileageX = 0;
+    let greatGasMileageY = 0;
+    let greatGasMileageWidth = 0;
+    let greatGasMileageHeight = 0;
+    let greatGasMileageScale = 0.3;
+    let isDraggingGreatGasMileage = false;
     
     // refNum2. Overlay Image
     let overlayImage = new Image();
@@ -126,6 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Great Reliability remove button event listener
     removeGreatReliabilityBtn.addEventListener('click', removeGreatReliabilityBadge);
+
+    // Great Gas Mileage button event listeners
+    addGreatGasMileageBtn.addEventListener('click', addGreatGasMileageBadge);
+    removeGreatGasMileageBtn.addEventListener('click', removeGreatGasMileageBadge);
     
     // Snow Mode size control event listeners
     increaseSnowModeSize.addEventListener('click', () => {
@@ -196,6 +215,33 @@ document.addEventListener('DOMContentLoaded', () => {
             redrawCanvas();
         }
     });
+
+    // Great Gas Mileage size control event listeners
+    increaseGreatGasMileageSize.addEventListener('click', () => {
+        if (greatGasMileageScale < MAX_GREAT_GAS_MILEAGE_SCALE && showGreatGasMileage && greatGasMileageImage) {
+            const centerX = greatGasMileageX + greatGasMileageWidth / 2;
+            const centerY = greatGasMileageY + greatGasMileageHeight / 2;
+
+            greatGasMileageScale = Math.min(MAX_GREAT_GAS_MILEAGE_SCALE, greatGasMileageScale + SCALE_STEP);
+            updateGreatGasMileageDimensions();
+            greatGasMileageX = centerX - greatGasMileageWidth / 2;
+            greatGasMileageY = centerY - greatGasMileageHeight / 2;
+            redrawCanvas();
+        }
+    });
+
+    decreaseGreatGasMileageSize.addEventListener('click', () => {
+        if (greatGasMileageScale > MIN_SCALE && showGreatGasMileage && greatGasMileageImage) {
+            const centerX = greatGasMileageX + greatGasMileageWidth / 2;
+            const centerY = greatGasMileageY + greatGasMileageHeight / 2;
+
+            greatGasMileageScale = Math.max(MIN_SCALE, greatGasMileageScale - SCALE_STEP);
+            updateGreatGasMileageDimensions();
+            greatGasMileageX = centerX - greatGasMileageWidth / 2;
+            greatGasMileageY = centerY - greatGasMileageHeight / 2;
+            redrawCanvas();
+        }
+    });
     
     // Coming Soon font size control event listeners
     increaseComingSoonFont.addEventListener('click', () => {
@@ -236,6 +282,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
+        if (showGreatGasMileage && greatGasMileageImage) {
+            if (mouseX >= greatGasMileageX && mouseX <= greatGasMileageX + greatGasMileageWidth &&
+                mouseY >= greatGasMileageY && mouseY <= greatGasMileageY + greatGasMileageHeight) {
+                isDragging = true;
+                isDraggingGreatGasMileage = true;
+                dragStartX = mouseX - greatGasMileageX;
+                dragStartY = mouseY - greatGasMileageY;
+                return;
+            }
+        }
+
         // Check if click is within Great Reliability bounds
         if (showGreatReliability && greatReliabilityImage) {
             if (mouseX >= greatReliabilityX && mouseX <= greatReliabilityX + greatReliabilityWidth &&
@@ -285,6 +342,11 @@ document.addEventListener('DOMContentLoaded', () => {
             greatReliabilityY = mouseY - dragStartY;
             
             redrawCanvas();
+        } else if (isDraggingGreatGasMileage) {
+            greatGasMileageX = mouseX - dragStartX;
+            greatGasMileageY = mouseY - dragStartY;
+
+            redrawCanvas();
         } else if (isDraggingTopText) {
             textX = mouseX - dragStartX;
             textY = mouseY - dragStartY;
@@ -303,6 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isDraggingTopText = false;
         isDraggingSnowMode = false;
         isDraggingGreatReliability = false;
+        isDraggingGreatGasMileage = false;
     }
     
     // Function to update Snow Mode dimensions based on scale
@@ -318,6 +381,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (greatReliabilityImage) {
             greatReliabilityWidth = greatReliabilityImage.width * greatReliabilityScale;
             greatReliabilityHeight = greatReliabilityImage.height * greatReliabilityScale;
+        }
+    }
+
+    function updateGreatGasMileageDimensions() {
+        if (greatGasMileageImage) {
+            greatGasMileageWidth = greatGasMileageImage.width * greatGasMileageScale;
+            greatGasMileageHeight = greatGasMileageImage.height * greatGasMileageScale;
         }
     }
     
@@ -490,6 +560,45 @@ document.addEventListener('DOMContentLoaded', () => {
         showGreatReliability = false;
         redrawCanvas();
     }
+
+    function addGreatGasMileageBadge() {
+        if (!showGreatGasMileage) {
+            if (!greatGasMileageImage) {
+                const img = new Image();
+                img.onload = function() {
+                    greatGasMileageImage = img;
+                    updateGreatGasMileageDimensions();
+                    if (canvas.width && canvas.height) {
+                        greatGasMileageX = (canvas.width - greatGasMileageWidth) / 2;
+                        greatGasMileageY = (canvas.height - greatGasMileageHeight) / 2;
+                    }
+                    showGreatGasMileage = true;
+                    redrawCanvas();
+                };
+                img.onerror = function() {
+                    console.error('Error loading Great Gas Mileage image');
+                    alert('Error loading Great Gas Mileage image. Please make sure the file exists.');
+                };
+                img.src = 'great-gas-mileage-embedded.png';
+            } else {
+                updateGreatGasMileageDimensions();
+                if (canvas.width && canvas.height && greatGasMileageX === 0 && greatGasMileageY === 0) {
+                    greatGasMileageX = (canvas.width - greatGasMileageWidth) / 2;
+                    greatGasMileageY = (canvas.height - greatGasMileageHeight) / 2;
+                }
+                showGreatGasMileage = true;
+                redrawCanvas();
+            }
+        } else {
+            showGreatGasMileage = false;
+            redrawCanvas();
+        }
+    }
+
+    function removeGreatGasMileageBadge() {
+        showGreatGasMileage = false;
+        redrawCanvas();
+    }
     
     // Function to draw "COMING SOON" text
     function drawComingSoonText() {
@@ -538,6 +647,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 greatReliabilityY,
                 greatReliabilityWidth,
                 greatReliabilityHeight
+            );
+            ctx.restore();
+        }
+
+        if (showGreatGasMileage && greatGasMileageImage) {
+            ctx.save();
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(
+                greatGasMileageImage,
+                greatGasMileageX,
+                greatGasMileageY,
+                greatGasMileageWidth,
+                greatGasMileageHeight
             );
             ctx.restore();
         }
@@ -590,11 +713,32 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please enter a stock number before downloading.');
             return;
         }
-        
-        const link = document.createElement('a');
-        link.download = `${stockNumber}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+
+        if (!baseImage) {
+            alert('Please upload an image before downloading.');
+            return;
+        }
+
+        try {
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    alert('The image could not be exported. Please try again.');
+                    return;
+                }
+
+                const downloadUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `${stockNumber}.png`;
+                link.href = downloadUrl;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+            }, 'image/png');
+        } catch (error) {
+            console.error('Error exporting image:', error);
+            alert('The image could not be exported. Please reload the page and try again.');
+        }
     }
     
     // refNum4. Image Upload Handler
@@ -633,6 +777,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateGreatReliabilityDimensions();
                     greatReliabilityX = (canvas.width - greatReliabilityWidth) / 2;
                     greatReliabilityY = (canvas.height - greatReliabilityHeight) / 2;
+                }
+
+                if (showGreatGasMileage && greatGasMileageImage) {
+                    updateGreatGasMileageDimensions();
+                    greatGasMileageX = (canvas.width - greatGasMileageWidth) / 2;
+                    greatGasMileageY = (canvas.height - greatGasMileageHeight) / 2;
                 }
                 
                 // Redraw canvas with new image

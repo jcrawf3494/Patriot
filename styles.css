@@ -342,3 +342,38 @@ h1 {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(156, 39, 176, 0.3);
 } 
+
+/* Great Gas Mileage Section */
+.great-gas-mileage-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.great-gas-mileage-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.great-gas-mileage-button {
+    display: block;
+    padding: 12px 24px;
+    background: linear-gradient(145deg, #4CAF50, #388E3C);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+.great-gas-mileage-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
