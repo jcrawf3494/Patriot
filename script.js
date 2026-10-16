@@ -157,6 +157,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Optional immersive canvas view for small screens; editing state stays intact.
+    const expandPreviewBtn = document.getElementById('previewExpandBtn');
+    if (expandPreviewBtn) {
+        expandPreviewBtn.addEventListener('click', () => {
+            const expanded = document.body.classList.toggle('preview-expanded');
+            expandPreviewBtn.setAttribute('aria-pressed', String(expanded));
+            expandPreviewBtn.setAttribute('aria-label', expanded ? 'Close expanded photo preview' : 'Expand photo preview');
+            expandPreviewBtn.querySelector('.expand-label').textContent = expanded ? 'Close' : 'Expand';
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && document.body.classList.contains('preview-expanded')) {
+                expandPreviewBtn.click();
+            }
+        });
+    }
+    document.querySelectorAll('#editingTools input').forEach((input) => {
+        input.addEventListener('focus', () => document.body.classList.add('typing-input'));
+        input.addEventListener('blur', () => document.body.classList.remove('typing-input'));
+    });
+
     // refNum3. Event Listeners
     imageUpload.addEventListener('change', handleImageUpload);      // Reference refNum4
     downloadBtn.addEventListener('click', downloadImage);          // Reference refNum8
