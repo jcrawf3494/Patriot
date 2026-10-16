@@ -90,8 +90,73 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initialize text position after logo
         textX = logoWidth + 15;
         textY = 65;
+        if (baseImage) redrawCanvas();
     };
     
+    // Local-only file import: file picker and external drag-and-drop share one loader.
+    const canvasStage = document.getElementById('canvasDropZone');
+    const dropZone = document.getElementById('dropZone');
+    const fileName = document.getElementById('fileName');
+    const previewStatus = document.getElementById('previewStatus');
+    const allowedExtensions = /\\.(jpe?g|png|webp)$/i;
+
+    function isSupportedImage(file) {
+        return !!file && (
+            ['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
+            (!file.type && allowedExtensions.test(file.name))
+        );
+    }
+
+    function acceptFiles(files) {
+        const file = Array.from(files || []).find(isSupportedImage);
+        if (!file) {
+            alert('Choose a JPG, PNG, or WebP photo.');
+            return;
+        }
+        handleImageFile(file);
+    }
+
+    // Drop anywhere on the page, with a visible target in the upload panel and canvas.
+    // Do not intercept drag events originating from the canvas editing tools.
+    let externalDragDepth = 0;
+    function isFileDrag(event) {
+        return Array.from(event.dataTransfer?.types || []).includes('Files');
+    }
+    document.addEventListener('dragenter', (event) => {
+        if (!isFileDrag(event)) return;
+        event.preventDefault();
+        externalDragDepth += 1;
+        dropZone.classList.add('is-dragover');
+        canvasStage.classList.add('is-dragover');
+    });
+    document.addEventListener('dragover', (event) => {
+        if (!isFileDrag(event)) return;
+        event.preventDefault();
+        if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+    });
+    document.addEventListener('dragleave', (event) => {
+        if (!isFileDrag(event)) return;
+        externalDragDepth = Math.max(0, externalDragDepth - 1);
+        if (!externalDragDepth) clearDropState();
+    });
+    function clearDropState() {
+        externalDragDepth = 0;
+        dropZone.classList.remove('is-dragover');
+        canvasStage.classList.remove('is-dragover');
+    }
+    document.addEventListener('drop', (event) => {
+        if (!isFileDrag(event)) return;
+        event.preventDefault();
+        clearDropState();
+        acceptFiles(event.dataTransfer.files);
+    });
+    dropZone.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            imageUpload.click();
+        }
+    });
+
     // refNum3. Event Listeners
     imageUpload.addEventListener('change', handleImageUpload);      // Reference refNum4
     downloadBtn.addEventListener('click', downloadImage);          // Reference refNum8
@@ -258,17 +323,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Canvas mouse events for dragging text
-    canvas.addEventListener('mousedown', handleMouseDown);
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseup', handleMouseUp);
-    canvas.addEventListener('mouseleave', handleMouseUp);
+    // Pointer events support mouse, touch and pen while preserving existing drag logic.
+    canvas.addEventListener('pointerdown', (event) => {
+        if (!baseImage || (event.button !== 0 && event.pointerType === 'mouse')) return;
+        handleMouseDown(event);
+        if (isDragging) {
+            canvas.setPointerCapture(event.pointerId);
+            event.preventDefault();
+        }
+    });
+    canvas.addEventListener('pointermove', handleMouseMove);
+    canvas.addEventListener('pointerup', handleMouseUp);
+    canvas.addEventListener('pointercancel', handleMouseUp);
+    canvas.addEventListener('lostpointercapture', handleMouseUp);
     
+    // Map displayed pixels to original image pixels. This keeps existing overlays draggable
+    // even when CSS scales the photo inside the responsive editing workspace.
+    function canvasPoint(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (e.clientX - rect.left) * canvas.width / rect.width,
+            y: (e.clientY - rect.top) * canvas.height / rect.height
+        };
+    }
+
     // refNum6. Mouse Event Handlers
     function handleMouseDown(e) {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        const point = canvasPoint(e);
+        const mouseX = point.x;
+        const mouseY = point.y;
         
         // Check if click is within Snow Mode bounds (highest priority - top layer)
         if (showSnowMode && snowModeImage) {
@@ -323,10 +406,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // refNum7. Mouse Movement Handler
     function handleMouseMove(e) {
         if (!isDragging) return;
-        
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+
+        const point = canvasPoint(e);
+        const mouseX = point.x;
+        const mouseY = point.y;
         
         if (isDraggingSnowMode) {
             // Calculate position based on mouse position relative to canvas
@@ -669,7 +752,9 @@ document.addEventListener('DOMContentLoaded', () => {
         drawGradientRectangle();
         
         // Draw overlay
-        ctx.drawImage(overlayImage, 5, 5);  // Moved 5px right and 5px down
+        if (overlayImage.complete && overlayImage.naturalWidth) {
+            ctx.drawImage(overlayImage, 5, 5);
+        }
         
         // Draw top text if it exists
         if (topText.value) {
@@ -744,8 +829,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // refNum4. Image Upload Handler
     function handleImageUpload(e) {
         const file = e.target.files[0];
-        if (!file) return;
-        
+        // Allow the same file to be selected a second time.
+        e.target.value = '';
+        if (file) acceptFiles([file]);
+    }
+
+    function handleImageFile(file) {
         const reader = new FileReader();
         reader.onload = function(event) {
             const img = new Image();
@@ -756,6 +845,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Store base image
                 baseImage = img;
+                document.body.classList.add('has-image');
+                fileName.textContent = file.name;
+                previewStatus.textContent = 'PHOTO LOADED';
                 
                 // Reset text position and font sizes
                 textX = logoWidth + 15;
@@ -791,8 +883,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // refNum8. Enable Download
                 downloadBtn.disabled = false;                      // Reference refNum8
             };
+            img.onerror = () => alert('This image could not be opened. Please choose a valid photo.');
             img.src = event.target.result;
         };
+        reader.onerror = () => alert('This image could not be read. Please try another file.');
         reader.readAsDataURL(file);
     }
 }); 
