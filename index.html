@@ -1,100 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Overlay Tool</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101317">
+  <meta name="description" content="Patriot Image Studio — a private, browser-based vehicle photo editor.">
+  <title>Patriot | Image Studio</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- refNum1. Main Container -->
-    <div class="container">
-        <!-- refNum2. Title -->
-        <h1>Image Overlay Tool</h1>
-        
-        <!-- refNum8. Stock Number Section -->
-        <div class="stock-number-section">
-            <input type="text" id="stockNumber" placeholder="Enter stock number" class="stock-input">
-        </div>
-        
-        <!-- refNum3. Upload Section -->
-        <div class="upload-section">
-            <!-- refNum4. File Input -->
-            <input type="file" id="imageUpload" accept="image/jpeg,image/png" class="file-input">
-            <!-- refNum5. Upload Button Label -->
-            <label for="imageUpload" class="upload-button">Choose Image (JPEG or PNG)</label>
-        </div>
-        
-        <!-- refNum9. Text Input Section -->
-        <div class="text-input-section">
-            <!-- refNum10. Top Text Control -->
-            <div class="text-control">
-                <input type="text" id="topText" placeholder="Enter top text here" class="text-input">
-                <button id="decreaseTopFont" class="font-button">↓ A</button>
-                <button id="increaseTopFont" class="font-button">↑ A</button>
-            </div>
-            <!-- refNum11. Bottom Text Control -->
-            <div class="text-control">
-                <input type="text" id="bottomText" placeholder="Enter bottom text here" class="text-input">
-                <button id="decreaseBottomFont" class="font-button">↓ A</button>
-                <button id="increaseBottomFont" class="font-button">↑ A</button>
-            </div>
-        </div>
-        
-        <!-- Canvas and Controls Wrapper -->
-        <div class="canvas-controls-wrapper">
-            <!-- refNum6. Canvas Container -->
-            <div class="canvas-container">
-                <!-- refNum7. Canvas Element -->
-                <canvas id="imageCanvas"></canvas>
-            </div>
-            
-            <!-- Controls Sidebar -->
-            <div class="controls-sidebar">
-                <!-- Coming Soon Section -->
-                <div class="coming-soon-section">
-                    <button id="comingSoonBtn" class="coming-soon-button">Add "COMING SOON" Text</button>
-                    <div class="coming-soon-controls">
-                        <button id="decreaseComingSoonFont" class="font-button">↓ A</button>
-                        <button id="increaseComingSoonFont" class="font-button">↑ A</button>
-                    </div>
-                </div>
-                
-                <!-- Snow Mode Section -->
-                <div class="snow-mode-section">
-                    <button id="addSnowModeBtn" class="snow-mode-button">Add Snow Mode Overlay</button>
-                    <div class="snow-mode-controls">
-                        <button id="decreaseSnowModeSize" class="font-button">↓ Size</button>
-                        <button id="increaseSnowModeSize" class="font-button">↑ Size</button>
-                        <button id="removeSnowModeBtn" class="remove-button">Remove</button>
-                    </div>
-                </div>
-                
-                <!-- Great Reliability Section -->
-                <div class="great-reliability-section">
-                    <button id="addGreatReliabilityBtn" class="great-reliability-button">Add Great Reliability Badge</button>
-                    <div class="great-reliability-controls">
-                        <button id="decreaseGreatReliabilitySize" class="font-button">↓ Size</button>
-                        <button id="increaseGreatReliabilitySize" class="font-button">↑ Size</button>
-                        <button id="removeGreatReliabilityBtn" class="remove-button">Remove</button>
-                    </div>
-                </div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Patriot Image Studio">
+        <span class="brand-mark" aria-hidden="true">P<span class="brand-mark-dot">.</span></span>
+        <div class="brand-copy"><span class="brand-name">PATRIOT</span><span class="brand-subtitle">IMAGE STUDIO</span></div>
+      </div>
+      <div class="topbar-right">
+        <span class="local-indicator"><span class="local-dot" aria-hidden="true"></span> PRIVATE &amp; LOCAL</span>
+        <span class="topbar-divider" aria-hidden="true"></span>
+        <span class="topbar-caption">PHOTO EDITOR / 01</span>
+      </div>
+    </header>
 
-                <!-- Great Gas Mileage Section -->
-                <div class="great-gas-mileage-section">
-                    <button id="addGreatGasMileageBtn" class="great-gas-mileage-button">Add Great Gas Mileage Badge</button>
-                    <div class="great-gas-mileage-controls">
-                        <button id="decreaseGreatGasMileageSize" class="font-button">↓ Size</button>
-                        <button id="increaseGreatGasMileageSize" class="font-button">↑ Size</button>
-                        <button id="removeGreatGasMileageBtn" class="remove-button">Remove</button>
-                    </div>
-                </div>
+    <main class="studio-grid">
+      <aside class="settings-panel" aria-label="Image and text settings">
+        <div class="panel-heading"><span class="eyebrow">WORKSPACE</span><h2>Start creating<span class="heading-period">.</span></h2><p>Load a photo, add your details, and make it yours.</p></div>
+
+        <section class="editor-card upload-section" aria-labelledby="uploadTitle">
+          <div class="card-heading"><span class="step-index">01</span><h3 id="uploadTitle">Your photo</h3></div>
+          <input type="file" id="imageUpload" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" class="file-input">
+          <label for="imageUpload" class="dropzone upload-button" id="dropZone" tabindex="0">
+            <span class="upload-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/>
+              </svg>
+            </span>
+            <span class="dropzone-title">Drop your photo here</span>
+            <span class="dropzone-subtitle">or <span class="browse-word">browse files</span> to upload</span>
+            <span class="file-types">JPG, PNG OR WEBP</span>
+          </label>
+          <div class="file-meta" id="fileMeta" role="status" aria-live="polite"><span class="file-meta-dot" aria-hidden="true"></span><span id="fileName">No photo selected</span></div>
+        </section>
+
+        <section class="editor-card stock-number-section" aria-labelledby="stockTitle">
+          <div class="card-heading"><span class="step-index">02</span><h3 id="stockTitle">Stock details</h3></div>
+          <label class="field-label" for="stockNumber">Stock number <span class="label-hint">Required to download</span></label>
+          <input type="text" id="stockNumber" placeholder="e.g. PRT-1024" class="stock-input" autocomplete="off">
+          <p class="field-help">Your stock number becomes the PNG filename.</p>
+        </section>
+
+        <section class="editor-card text-input-section" aria-labelledby="textTitle">
+          <div class="card-heading"><span class="step-index">03</span><h3 id="textTitle">Custom text</h3></div>
+          <div class="text-control">
+            <label class="field-label" for="topText">Top headline</label>
+            <input type="text" id="topText" placeholder="Enter top text here" class="text-input">
+            <div class="size-row"><span>TEXT SIZE</span><div class="size-actions">
+              <button type="button" id="decreaseTopFont" class="font-button" aria-label="Decrease top text font size">− A</button>
+              <button type="button" id="increaseTopFont" class="font-button" aria-label="Increase top text font size">+ A</button>
+            </div></div>
+          </div>
+          <div class="field-divider"></div>
+          <div class="text-control">
+            <label class="field-label" for="bottomText">Bottom headline</label>
+            <input type="text" id="bottomText" placeholder="Enter bottom text here" class="text-input">
+            <div class="size-row"><span>TEXT SIZE</span><div class="size-actions">
+              <button type="button" id="decreaseBottomFont" class="font-button" aria-label="Decrease bottom text font size">− A</button>
+              <button type="button" id="increaseBottomFont" class="font-button" aria-label="Increase bottom text font size">+ A</button>
+            </div></div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="preview-workspace" aria-label="Image preview and export">
+        <div class="preview-heading"><span class="eyebrow">LIVE EDITOR / PREVIEW</span><h1>Make every photo <em>stand out.</em></h1><p>Arrange your text and badges directly on the image.</p></div>
+        <div class="preview-card">
+          <div class="canvas-toolbar"><span class="toolbar-label"><span class="toolbar-icon" aria-hidden="true">◩</span> EDITING CANVAS</span><span class="preview-status" id="previewStatus" role="status">AWAITING PHOTO</span></div>
+          <div class="canvas-stage" id="canvasDropZone">
+            <div class="canvas-container"><canvas id="imageCanvas" aria-label="Editable photo preview"></canvas></div>
+            <div class="canvas-placeholder" id="canvasPlaceholder" aria-hidden="true">
+              <div class="placeholder-graphic">
+                <svg viewBox="0 0 64 64" width="68" height="68" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round">
+                  <rect x="7" y="11" width="50" height="42" rx="5"/><circle cx="23" cy="24" r="5"/><path d="M9 44l13-13 10 9 10-13 13 16"/>
+                </svg>
+              </div>
+              <strong>Your canvas is ready</strong>
+              <span>Upload or drop a photo to get started.</span>
             </div>
+            <div class="stage-drop-overlay" aria-hidden="true"><span>RELEASE TO IMPORT PHOTO</span></div>
+          </div>
+          <div class="canvas-footnote"><span><span class="footnote-spark" aria-hidden="true">✦</span> Drag text and badges to reposition</span><span>PREVIEW UPDATES LIVE</span></div>
         </div>
-        
-        <!-- refNum8. Download Button -->
-        <button id="downloadBtn" class="download-button" disabled>Download Image</button>
-    </div>
-    <script src="script.js"></script>
+
+        <div class="export-card">
+          <div class="export-copy"><span class="export-icon" aria-hidden="true">↧</span><div><strong>Ready to export?</strong><p>Save your finished photo as a full-resolution PNG.</p></div></div>
+          <button type="button" id="downloadBtn" class="download-button" disabled>Download image <span aria-hidden="true">↗</span></button>
+        </div>
+      </section>
+
+      <aside class="controls-sidebar" aria-label="Overlay controls">
+        <div class="tools-heading"><span class="eyebrow">CUSTOMIZE</span><h2>Overlays<span class="heading-period">.</span></h2><p>Layer on your branded highlights.</p></div>
+        <section class="tool-card coming-soon-section">
+          <div class="tool-heading"><span class="tool-icon coming-icon" aria-hidden="true">T</span><div><h3>Coming soon</h3><p>Promotional text overlay</p></div></div>
+          <button type="button" id="comingSoonBtn" class="coming-soon-button tool-primary">Add "COMING SOON" Text</button>
+          <div class="tool-secondary coming-soon-controls">
+            <span class="secondary-label">FONT SIZE</span>
+            <div class="size-actions"><button type="button" id="decreaseComingSoonFont" class="font-button" aria-label="Decrease Coming Soon font size">−</button><button type="button" id="increaseComingSoonFont" class="font-button" aria-label="Increase Coming Soon font size">+</button></div>
+          </div>
+        </section>
+
+        <section class="tool-card snow-mode-section">
+          <div class="tool-heading"><span class="tool-icon snow-icon" aria-hidden="true">❄</span><div><h3>Snow mode</h3><p>Winter-ready badge</p></div></div>
+          <button type="button" id="addSnowModeBtn" class="snow-mode-button tool-primary">Add Snow Mode Overlay</button>
+          <div class="tool-secondary snow-mode-controls">
+            <span class="secondary-label">BADGE SIZE</span><div class="size-actions"><button type="button" id="decreaseSnowModeSize" class="font-button" aria-label="Decrease Snow Mode size">−</button><button type="button" id="increaseSnowModeSize" class="font-button" aria-label="Increase Snow Mode size">+</button></div>
+            <button type="button" id="removeSnowModeBtn" class="remove-button">Remove</button>
+          </div>
+        </section>
+
+        <section class="tool-card great-reliability-section">
+          <div class="tool-heading"><span class="tool-icon reliability-icon" aria-hidden="true">★</span><div><h3>Great reliability</h3><p>Trust and quality badge</p></div></div>
+          <button type="button" id="addGreatReliabilityBtn" class="great-reliability-button tool-primary">Add Great Reliability Badge</button>
+          <div class="tool-secondary great-reliability-controls">
+            <span class="secondary-label">BADGE SIZE</span><div class="size-actions"><button type="button" id="decreaseGreatReliabilitySize" class="font-button" aria-label="Decrease Great Reliability size">−</button><button type="button" id="increaseGreatReliabilitySize" class="font-button" aria-label="Increase Great Reliability size">+</button></div>
+            <button type="button" id="removeGreatReliabilityBtn" class="remove-button">Remove</button>
+          </div>
+        </section>
+
+        <section class="tool-card great-gas-mileage-section">
+          <div class="tool-heading"><span class="tool-icon mileage-icon" aria-hidden="true">↗</span><div><h3>Great gas mileage</h3><p>Efficiency highlight badge</p></div></div>
+          <button type="button" id="addGreatGasMileageBtn" class="great-gas-mileage-button tool-primary">Add Great Gas Mileage Badge</button>
+          <div class="tool-secondary great-gas-mileage-controls">
+            <span class="secondary-label">BADGE SIZE</span><div class="size-actions"><button type="button" id="decreaseGreatGasMileageSize" class="font-button" aria-label="Decrease Great Gas Mileage size">−</button><button type="button" id="increaseGreatGasMileageSize" class="font-button" aria-label="Increase Great Gas Mileage size">+</button></div>
+            <button type="button" id="removeGreatGasMileageBtn" class="remove-button">Remove</button>
+          </div>
+        </section>
+        <div class="privacy-note"><span aria-hidden="true">✧</span><p>No account, uploads, or external services. Your photos stay in your browser.</p></div>
+      </aside>
+    </main>
+    <footer class="site-footer"><span>© PATRIOT IMAGE STUDIO</span><span>DESIGNED TO WORK OFFLINE · GITHUB PAGES READY</span></footer>
+  </div>
+  <script src="script.js"></script>
 </body>
-</html> 
+</html>
