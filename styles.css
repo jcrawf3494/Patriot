@@ -154,3 +154,86 @@ button:focus-visible, input:focus-visible, label[tabindex]:focus-visible { outli
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
+/* Responsive editing enhancements: preserve the large canvas and full-size exports. */
+.upload-section { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.preview-expand-button {
+  min-height: 39px; border: 1px solid #d0d8e2; border-radius: 7px; background: #fff;
+  color: #273646; display: inline-flex; align-items: center; gap: 6px;
+  justify-content: center; padding: 6px 12px; font-weight: 740; font-size: 12px;
+}
+.preview-expand-button:hover { background: #f1f4f7; }
+.preview-expand-button > span:first-child { font-size: 20px; line-height: 1; }
+body.preview-expanded { overflow: hidden; }
+body.preview-expanded .canvas-card {
+  position: fixed; inset: 0; z-index: 100; border-radius: 0; border: 0;
+  display: flex; flex-direction: column; background: var(--dark);
+}
+body.preview-expanded .canvas-topbar { flex: none; }
+body.preview-expanded .canvas-stage { flex: 1; height: auto; min-height: 0; }
+body.preview-expanded .canvas-bottombar { flex: none; background: white; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+body.preview-expanded .preview-expand-button { background: #283748; color: white; border-color: #283748; }
+body.preview-expanded .canvas-container { inset: 12px; }
+body.preview-expanded #imageCanvas { max-height: 100%; }
+
+@media (max-width: 920px) {
+  .canvas-stage { height: min(56vh, 660px); }
+  .controls-sidebar { overflow: visible; }
+  .sidebar-content { min-height: 0; }
+}
+@media (max-width: 580px) {
+  /* The preview remains visible while scrolling through the tools. */
+  .editor-main {
+    position: sticky; top: 0; z-index: 20; align-self: start;
+    padding: 8px 0 9px; margin-top: -8px; background: var(--page);
+    box-shadow: 0 12px 14px -19px rgba(22, 37, 54, .5);
+    gap: 0;
+  }
+  body.typing-input .editor-main { position: static; }
+  .page-heading, .canvas-tip { display: none; }
+  .workspace { gap: 12px; padding-top: 14px; }
+  .canvas-card { border-radius: 10px; }
+  .canvas-topbar { min-height: 51px; height: auto; padding: 7px 10px; }
+  .canvas-topbar-title { font-size: 10px; }
+  .upload-section { margin-left: auto; }
+  .upload-button { min-height: 42px; padding: 8px 11px; white-space: nowrap; }
+  .preview-expand-button { min-height: 42px; padding: 7px 11px; }
+  .canvas-stage { height: clamp(185px, 34dvh, 305px); min-height: 0; }
+  .canvas-container { inset: 8px; }
+  .canvas-bottombar { min-height: 36px; padding: 7px 10px; font-size: 10px; }
+  .preview-status { white-space: nowrap; }
+  .sidebar-heading { padding: 14px 16px; }
+  .sidebar-heading h2 { font-size: 17px; }
+  .sidebar-content { display: block; }
+  .control-section { padding: 15px 16px; }
+  .control-label-row { margin-bottom: 8px; }
+  .stock-input, .text-input { height: 48px; font-size: 16px; }
+  .font-button, .overlay-actions .font-button {
+    min-height: 44px; min-width: 44px; font-size: 19px; padding: 5px 9px;
+  }
+  .tool-primary { min-height: 44px; font-size: 12px; padding: 9px 11px; }
+  .overlay-actions { gap: 8px; flex-wrap: wrap; }
+  .overlay-actions .size-actions { gap: 7px; }
+  .remove-button {
+    min-height: 44px; padding: 8px 10px; font-size: 12px;
+    margin-left: auto; text-decoration: none;
+  }
+  .overlay-item { padding: 12px 0; }
+  .overlay-title strong { font-size: 13px; }
+  .overlay-mini-icon { width: 31px; height: 31px; }
+  .export-bar { margin-top: 0; padding: 14px; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+  .download-button { min-height: 48px; font-size: 15px; }
+  .site-footer { padding-bottom: max(25px, env(safe-area-inset-bottom)); }
+  body.preview-expanded .canvas-card { box-shadow: none; }
+  body.preview-expanded .canvas-stage { height: auto; min-height: 0; }
+}
+@media (max-width: 380px) {
+  .top-note { display: none; }
+  .canvas-topbar-title { display: none; }
+  .canvas-topbar { justify-content: flex-end; }
+  .upload-section { width: 100%; justify-content: space-between; }
+  .canvas-placeholder { padding: 12px; gap: 7px; }
+  .empty-icon { display: none; }
+}
+@media (max-width: 580px) and (max-height: 650px) {
+  .canvas-stage { height: clamp(140px, 28dvh, 190px); }
+}
